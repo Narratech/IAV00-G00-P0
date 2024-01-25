@@ -44,14 +44,19 @@ Indicar también cuál es la manera recomendada de realizar las pruebas, si manu
 stateDiagram
     [*] --> Inicio
     Inicio --> Juego
-    Juego --> Resolución manual
-    Juego --> Resolución automática
-    Puzle resuelto --> Juego
+    Juego --> Manual
+    Manual : Resolución manual
+    Juego --> Automatica 
+    Automatica : Resolución automática
+    Manual --> Resuelto
+    Automatica --> Resuelto
+    Resuelto --> Juego
+    Resuelto :Puzle resuelto 
 ```
 Lo que vamos a tener que utilizar:
-* Algoritmos: Primero en anchura y Primero en profundidad (INSERTAR AQUÍ EL PSEUDOCÓDIGO)
-* Heurísticas: Desordenar a base de clicar en piezas aleatorias
-* Trucos: -
+* **Algoritmos**: Primero en anchura y Primero en profundidad (INSERTAR AQUÍ EL PSEUDOCÓDIGO)
+* **Heurísticas**: Desordenar a base de clicar en piezas aleatorias
+* **Trucos**: -
 
 ## Implementación
 Las tareas se han realizado y el esfuerzo ha sido asumido por el único autor (ya que no era posible repartirlo entre varios).
@@ -69,63 +74,98 @@ Las tareas se han realizado y el esfuerzo ha sido asumido por el único autor (y
 Las clases principales que se han desarrollados son las siguientes.
 ```mermaid
 classDiagram
-      BlockBoard <|-- MonoBehavior
-      CameraManager <|-- MonoBehavior
-      MovableBlock <|-- MonoBehavior
+      BlockBoard <|-- MonoBehaviour
+      CameraManager <|-- MonoBehaviour
+      MovableBlock <|-- MonoBehaviour
       SlidingPuzzleManager <|-- MonoBehaviour
-
+      class IDeepCloneable
       <<interface>> IDeepCloneable
-      <<interface>> IDeepCloneable<T>
 
-      Position
-      SlidingPuzzle <|-- <<interface>> IDeepCloneable<SlidingPuzzle>
-      SlidingPuzzle <|-- <<interface>> IEquatable<SlidingPuzzle>
-      SlidingPuzzle <|-- <<interface>> IComparable<SlidingPuzzle>
-      SlidingPuzzle <|-- <<interface>> IComparable
+      class IDeepCloneableT ["IDeepCloneable < T >"]
+      <<interface>> IDeepCloneableT
 
-      SlidingPuzzleFunctionFactory
-      SlidingPuzzleGoalTest <|-- <<interface>> GoalTest
-      SlidingPuzzleSolver
+      class Position
 
-      BasicOperator <|-- <<interface>> Operator
-      NoOperator <|-- <<interface>> Operator
+      SlidingPuzzle <|-- IDeepCloneableSP : implements
+      class IDeepCloneableSP ["IDeepCloneable < SlidingPuzzle >"]
+      <<interface>> IDeepCloneableSP
+      SlidingPuzzle <|-- IEquatableSP : implements
+      class IEquatableSP  ["IEquatable < SlidingPuzzle >"]
+      <<interface>> IEquatableSP 
+      SlidingPuzzle <|-- IComparableSP : implements
+      class IComparableSP ["IComparable < SlidingPuzzle >"]
+      <<interface>> IComparableSP
+      SlidingPuzzle <|-- IComparable  : implements
+      class IComparable
+      <<interface>> IComparable
+
+      class SlidingPuzzleFunctionFactory
+      SlidingPuzzleGoalTest <|-- GoalTest : implements
+      <<interface>> GoalTest
+      class SlidingPuzzleSolver
+
+      BasicOperator <|-- Operator : implements
+      <<interface>> Operator
+      NoOperator <|-- Operator : implements
       <<interface>> Operator
 
-      FIFOQueue<T> <|--  Queue<T>
-      FIFOQueue<T> <|-- <<interface>> IQueue<T>
-      <<interface>> IQueue<T> <|-- <<interface>> IEnumerable<T>
-      LIFOQueue<T> <|--  Stack<T>
-      LIFOQueue<T> <|-- <<interface>> IQueue<T>
+      FIFOQueueT <|--  QueueT
+      class FIFOQueueT ["FIFOQueue < T >"]
+      class QueueT ["Queue < T >"]
 
+      FIFOQueueT <|--  IQueueT  
+      class IQueueT ["IQueue < T >"]
+      <<interface>> IQueueT
+      IQueueT <|-- IEnumerableT 
+      class IEnumerableT ["IEnumerable < T >"]
+      <<interface>> IEnumerableT
+      LIFOQueueT <|--  StackT
+      class LIFOQueueT ["LIFOQueue < T >"] 
+      class StackT ["Stack < T >"]
+      LIFOQueueT <|-- IQueueT : implements
+
+      class ApplicableOperatorsFunction
       <<interface>> ApplicableOperatorsFunction
-      DefaultStepCostFunction : StepCostFunction
+      DefaultStepCostFunction <|-- StepCostFunction
+      class GoalTest
       <<interface>> GoalTest
-      GraphSearch : QueueSearch
-      Metrics
-      Node <|-- <<interface>> IEquatable<Node>
-      Node <|-- <<interface>>  IComparable<Node>
-      Node <|-- <<interface>> IComparable
-      NodeExpander
-      Problem
+      GraphSearch <|-- QueueSearch
+      class Metrics
+
+      Node <|-- IEquatableN
+      class IEquatableN ["IEquatable < Node >"]
+      <<interface>> IEquatableN
+      Node <|-- IComparableN
+      class IComparableN ["IComparableN < Node >"]
+      <<interface>> IComparableN
+      Node <|-- IComparable
+      class IComparable
+      <<interface>> IComparable
+
+      class NodeExpander
+      class Problem
       QueueSearch <|--  NodeExpander
-      <<interface>>  Search
-      SearchUtils
+      class Search
+      <<interface>> Search
+      class SearchUtils
+      class StepCostFunction
       <<interface>> StepCostFunction
+      class TransitionModel
       <<interface>> TransitionModel
 
-      BreadthFirstSearch : Search
-      DepthFirstSearch : Search
+      BreadthFirstSearch <|--  Search : implements
+      DepthFirstSearch <|--  Search : implements
 ```
 
 ## Pruebas
-Detallar la serie más corta y rápida posible de pruebas que pueden realizarse para verificar que se cumple todo lo que piden el enunciado.
+Detallar la serie más corta y rápida posible de pruebas que pueden realizarse para verificar que se cumple todo lo que piden el enunciado:
 
-Arranca la aplicación y haz un par de Reset para mostrar el puzle en su configuración inicial, y ver que se indica cuando el puzle está ordenado.  
-Clica tres veces en piezas vecinas del espacio libre o “hueco” (y en algunas que no lo sean) para ver que se pueden mover las piezas manualmente.  
-Usa el botón Reset para reiniciar el puzle a su configuración inicial y luego Random para ver que efectivamente se desordena aleatoriamente.  
-Usa el botón Solve BFS primero, y Solve DFS después (sobre un puzle de tamaño pequeño y no demasiado desordenando) para ver que se puede resolver automáticamente el puzle con esas dos estrategias no informadas.
-Observa la resolución paso a paso, no sólo su configuración final.  
-Observa las medidas del éxito (pasos, tiempo...) al terminar. 
+* Arranca la aplicación y haz un par de Reset para mostrar el puzle en su configuración inicial, y ver que se indica cuando el puzle está ordenado.  
+* Clica tres veces en piezas vecinas del espacio libre o “hueco” (y en algunas que no lo sean) para ver que se pueden mover las piezas manualmente.  
+* Usa el botón Reset para reiniciar el puzle a su configuración inicial y luego Random para ver que efectivamente se desordena aleatoriamente.  
+* Usa el botón Solve BFS primero, y Solve DFS después (sobre un puzle de tamaño pequeño y no demasiado desordenando) para ver que se puede resolver automáticamente el puzle con esas dos estrategias no informadas.
+* Observa la resolución paso a paso, no sólo su configuración final.  
+* Observa las medidas del éxito (pasos, tiempo...) al terminar. 
 
 ## Conclusiones
 Queda toda la posproducción por hacer: el pulido y la distribución del ejecutable del juego, así como la publicación del video-documental con las pruebas.
@@ -144,10 +184,10 @@ A, B y C, autores de la documentación, código y recursos de este trabajo, conc
 Una vez superada con éxito la asignatura se prevee publicar todo en abierto (la documentación con licencia Creative Commons Attribution 4.0 International (CC BY 4.0) y el código con licencia GNU Lesser General Public License 3.0).
 
 ## Referencias
-[AnalogBit: Sliding Block Puzzle Solver](http://analogbit.com/software/puzzletools/)
-[How Sliding Puzzles Work (How Stuff Works)](https://entertainment.howstuffworks.com/puzzles/sliding-puzzles.htm)
-Sliding Puzzle Collection (Random Box Studio, 2020)
-[Sliding puzzle (Wikipedia)](https://en.wikipedia.org/wiki/Sliding_puzzle)
+* [AnalogBit: Sliding Block Puzzle Solver](http://analogbit.com/software/puzzletools/)
+* [How Sliding Puzzles Work (How Stuff Works)](https://entertainment.howstuffworks.com/puzzles/sliding-puzzles.htm)
+* Sliding Puzzle Collection (Random Box Studio, 2020)
+* [Sliding puzzle (Wikipedia)](https://en.wikipedia.org/wiki/Sliding_puzzle)
 
 
 
