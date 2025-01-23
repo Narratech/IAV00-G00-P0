@@ -1,6 +1,6 @@
 # Inteligencia Artificial para Videojuegos - Práctica 0: Bloques Deslizantes
 
-Se trata de un prototipo básico del clásico puzle de los bloques deslizantes que incorpora un resolutor automático. Este es el [enunciado completo]([http://analogbit.com/software/puzzletools/](https://narratech.com/es/inteligencia-artificial-para-videojuegos/introduccion/bloques-deslizantes/) en la web de Narratech. 
+Se trata de un prototipo básico del clásico puzle de los bloques deslizantes que incorpora un resolutor automático. Este es el [enunciado completo](https://narratech.com/es/inteligencia-artificial-para-videojuegos/introduccion/bloques-deslizantes/) en la web de Narratech. 
 
 La versión original del prototipo proviene del repositorio de libro Artificial Intelligence: A Modern Approach, aunque el prototipo fue revisado y completado por Federico Peinado. El código se distribuye bajo la licencia LGPL.
 
